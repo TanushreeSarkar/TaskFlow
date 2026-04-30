@@ -113,3 +113,5 @@ export const Layout = () => {
     </div>
   );
 };
+// Built with ❤️ for the **[Ethara.AI](https://ethara.ai)** Full-Stack Engineering Assessment 
+// By Tanushree Sarkar (2201641530214)

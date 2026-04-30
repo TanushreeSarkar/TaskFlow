@@ -1,3 +1,5 @@
+// //Built with ❤️ for the **[Ethara.AI](https://ethara.ai)** Full-Stack Engineering Assessment 
+// By Tanushree Sarkar (2201641530214)
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
