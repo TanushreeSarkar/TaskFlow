@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
+const baseURL = import.meta.env.PROD 
+  ? 'https://taskflow-1-vi32.onrender.com/api' 
+  : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL,
 });
 
 api.interceptors.request.use(
