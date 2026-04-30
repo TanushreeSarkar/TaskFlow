@@ -1,7 +1,5 @@
 # 🚀 TaskFlow — Team Task Manager
 
-![TaskFlow Header](https://via.placeholder.com/1200x400/8b5cf6/ffffff?text=TaskFlow+Team+Task+Manager)
-
 > **Ethara.AI Full-Stack Assessment Submission**
 
 A modern, production-ready Team Task Manager application featuring project-level Role-Based Access Control (RBAC), real-time updates, and a premium glassmorphism UI.
@@ -43,17 +41,6 @@ A modern, production-ready Team Task Manager application featuring project-level
 - JSON Web Tokens (JWT) for Authentication
 - Zod (Request validation)
 - Bcrypt.js (Password hashing)
-
----
-
-## 📸 Screenshots
-
-*(Replace these placeholders with actual screenshots of your running app)*
-
-<div align="center">
-  <img src="https://via.placeholder.com/800x450/f1f5f9/6366f1?text=Dashboard+Screenshot" alt="Dashboard" width="48%">
-  <img src="https://via.placeholder.com/800x450/f1f5f9/6366f1?text=Kanban+Board+Screenshot" alt="Task Board" width="48%">
-</div>
 
 ---
 
