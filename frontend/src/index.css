@@ -11,121 +11,182 @@
     box-sizing: border-box;
   }
   body {
-    @apply bg-background text-slate-800 antialiased;
+    @apply bg-dark-900 text-slate-200 antialiased;
     font-family: 'Inter', sans-serif;
   }
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+  ::-webkit-scrollbar-thumb { background: rgba(225,29,72,0.25); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(225,29,72,0.4); }
+
+  /* Dark select dropdowns */
+  select option {
+    background: #141414;
+    color: #e2e8f0;
+  }
 }
 
 @layer components {
+  /* ─── Buttons ─── */
   .btn-primary {
-    @apply px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl font-semibold text-sm
-    transition-all duration-200 hover:shadow-lg hover:shadow-violet-500/25 hover:-translate-y-0.5 
+    @apply px-5 py-2.5 text-white rounded-xl font-semibold text-sm
+    transition-all duration-300 hover:-translate-y-0.5 
     active:translate-y-0 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+    background: linear-gradient(135deg, #e11d48, #3b82f6);
+    box-shadow: 0 4px 20px rgba(225,29,72,0.25);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 8px 30px rgba(225,29,72,0.35), 0 0 0 1px rgba(59,130,246,0.1);
   }
   .btn-secondary {
-    @apply px-5 py-2.5 bg-white text-slate-700 border border-slate-200 rounded-xl font-semibold text-sm
-    transition-all duration-200 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm 
-    active:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply px-5 py-2.5 text-slate-300 border border-white/10 rounded-xl font-semibold text-sm
+    transition-all duration-300 hover:text-white;
+    background: rgba(255,255,255,0.04);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.18);
   }
   .btn-danger {
-    @apply px-5 py-2.5 bg-gradient-to-r from-rose-500 to-red-500 text-white rounded-xl font-semibold text-sm
-    transition-all duration-200 hover:shadow-lg hover:shadow-rose-500/25 hover:-translate-y-0.5 
+    @apply px-5 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl font-semibold text-sm
+    transition-all duration-300 hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-0.5 
     active:translate-y-0;
   }
   .btn-ghost {
-    @apply px-3 py-2 text-slate-500 rounded-lg font-medium text-sm
-    transition-all duration-200 hover:bg-slate-100 hover:text-slate-700;
+    @apply px-3 py-2 text-slate-400 rounded-lg font-medium text-sm
+    transition-all duration-300 hover:text-white;
+    &:hover { background: rgba(255,255,255,0.05); }
   }
-  .card {
-    @apply bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-slate-100/80 transition-all duration-300;
+
+  /* ─── Glass Cards ─── */
+  .glass-card {
+    @apply rounded-2xl border border-white/[0.06] transition-all duration-300;
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
-  .card-hover {
-    @apply card hover:shadow-lg hover:shadow-slate-200/50 hover:border-slate-200 hover:-translate-y-0.5;
+  .glass-card-hover {
+    @apply glass-card hover:border-white/[0.12] hover:-translate-y-1;
   }
+  .glass-card-hover:hover {
+    background: rgba(255,255,255,0.04);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 30px rgba(225,29,72,0.04);
+  }
+
+  .card { @apply glass-card; }
+  .card-hover { @apply glass-card-hover; }
+
+  /* ─── Input Fields ─── */
   .input-field {
-    @apply w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm
-    focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 outline-none 
-    transition-all duration-200 bg-slate-50/50 focus:bg-white placeholder:text-slate-400;
+    @apply w-full px-4 py-2.5 border border-white/10 rounded-xl text-sm text-slate-200
+    outline-none transition-all duration-300 placeholder:text-slate-600;
+    background: rgba(255,255,255,0.04);
   }
-  .badge {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  .input-field:focus {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(225,29,72,0.4);
+    box-shadow: 0 0 0 3px rgba(225,29,72,0.1);
   }
+
+  /* ─── Badges ─── */
+  .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold; }
   .badge-admin {
-    @apply badge bg-violet-100 text-violet-700;
+    @apply badge;
+    background: rgba(225,29,72,0.14); color: #fb7185; border: 1px solid rgba(225,29,72,0.2);
   }
   .badge-member {
-    @apply badge bg-sky-100 text-sky-700;
+    @apply badge;
+    background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.18);
   }
   .badge-todo {
-    @apply badge bg-slate-100 text-slate-600;
+    @apply badge;
+    background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.15);
   }
   .badge-progress {
-    @apply badge bg-amber-100 text-amber-700;
+    @apply badge;
+    background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.15);
   }
   .badge-done {
-    @apply badge bg-emerald-100 text-emerald-700;
+    @apply badge;
+    background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.15);
   }
   .badge-overdue {
-    @apply badge bg-rose-100 text-rose-700;
+    @apply badge;
+    background: rgba(225,29,72,0.12); color: #fb7185; border: 1px solid rgba(225,29,72,0.15);
   }
   .badge-low {
-    @apply badge bg-slate-100 text-slate-600;
+    @apply badge;
+    background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.15);
   }
   .badge-medium {
-    @apply badge bg-orange-100 text-orange-700;
+    @apply badge;
+    background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.15);
   }
   .badge-high {
-    @apply badge bg-red-100 text-red-700;
+    @apply badge;
+    background: rgba(225,29,72,0.12); color: #fb7185; border: 1px solid rgba(225,29,72,0.15);
   }
+
+  /* ─── Modals ─── */
   .modal-overlay {
-    @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4;
+    @apply fixed inset-0 flex items-center justify-center z-50 p-4;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
     animation: fadeIn 0.2s ease-out;
   }
   .modal-content {
-    @apply bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6;
-    animation: slideUp 0.3s ease-out;
+    @apply w-full max-w-lg p-6 rounded-2xl border border-white/[0.08] relative;
+    background: linear-gradient(145deg, #141414, #0a0a0a);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 80px rgba(225,29,72,0.03);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .stat-card {
-    @apply card p-6 flex items-center gap-4;
-  }
-  .stat-icon {
-    @apply w-12 h-12 rounded-2xl flex items-center justify-center;
-  }
+
+  /* ─── Stat Cards ─── */
+  .stat-card { @apply glass-card p-6 flex items-center gap-4; }
+  .stat-icon { @apply w-12 h-12 rounded-2xl flex items-center justify-center; }
+
+  /* ─── Progress ─── */
   .progress-bar {
-    @apply h-2 bg-slate-100 rounded-full overflow-hidden;
+    @apply h-2 rounded-full overflow-hidden;
+    background: rgba(255,255,255,0.06);
   }
   .progress-fill {
     @apply h-full rounded-full transition-all duration-700 ease-out;
-    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    background: linear-gradient(90deg, #e11d48, #3b82f6);
   }
-  .avatar {
-    @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white;
+
+  /* ─── Avatar ─── */
+  .avatar { @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white; }
+
+  /* ─── Gradient Text ─── */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #e11d48, #3b82f6);
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+/* ─── Keyframes ─── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @keyframes slideIn {
   from { opacity: 0; transform: translateX(100%); }
   to { opacity: 1; transform: translateX(0); }
 }
-@keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.animate-slide-in { animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+/* ─── Tech Flower SVG Component ─── */
+.tech-flower {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.07;
 }
-.animate-slide-in {
-  animation: slideIn 0.3s ease-out;
-}
-.animate-pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
+.tech-flower path, .tech-flower circle, .tech-flower ellipse {
+  fill: none;
+  stroke-width: 1;
 }

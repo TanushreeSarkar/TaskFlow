@@ -11,43 +11,55 @@ const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <div className="w-64 bg-white border-r border-slate-100 h-screen fixed left-0 top-0 flex flex-col z-20">
+    <div className="w-64 h-screen fixed left-0 top-0 flex flex-col z-20 border-r border-white/[0.06]"
+      style={{ background: 'linear-gradient(180deg, #0f0f0f 0%, #0a0a0a 100%)' }}
+    >
       {/* Logo */}
-      <div className="p-6 border-b border-slate-100">
+      <div className="p-6 border-b border-white/[0.06]">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
+            style={{ background: 'linear-gradient(135deg, #e11d48, #3b82f6)', boxShadow: '0 4px 15px rgba(225,29,72,0.3)' }}>
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-extrabold bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent">
+          <span className="text-xl font-extrabold gradient-text">
             TaskFlow
           </span>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-3 space-y-1">
+      <nav className="flex-1 p-3 space-y-1 mt-2">
         {navItems.map(({ path, label, icon: Icon }) => {
           const isActive = location.pathname === path || location.pathname.startsWith(path + '/');
           return (
             <Link
               key={path}
               to={path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300
                 ${isActive
-                  ? 'bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 shadow-sm'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                  ? 'text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
+              style={isActive ? {
+                background: 'linear-gradient(135deg, rgba(225,29,72,0.12), rgba(59,130,246,0.08))',
+                border: '1px solid rgba(225,29,72,0.18)',
+                boxShadow: '0 0 20px rgba(225,29,72,0.08)',
+              } : {}}
             >
-              <Icon className={`w-5 h-5 ${isActive ? 'text-violet-600' : ''}`} />
+              <Icon className={`w-5 h-5 transition-colors duration-300 ${isActive ? 'text-cherry-400' : ''}`} />
               {label}
+              {isActive && (
+                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cherry-500 animate-pulse-soft"
+                  style={{ boxShadow: '0 0 8px rgba(225,29,72,0.6)' }} />
+              )}
             </Link>
           );
         })}
       </nav>
 
       {/* Bottom */}
-      <div className="p-4 border-t border-slate-100">
-        <p className="text-[10px] text-slate-400 text-center">TaskFlow v1.0</p>
+      <div className="p-4 border-t border-white/[0.06]">
+        <p className="text-[10px] text-slate-600 text-center">TaskFlow v1.0 · Ethara.AI</p>
       </div>
     </div>
   );
@@ -59,7 +71,7 @@ const getInitials = (name) => {
 };
 
 const avatarColors = [
-  'bg-violet-500', 'bg-indigo-500', 'bg-sky-500', 'bg-emerald-500',
+  'bg-cherry-500', 'bg-electric-500', 'bg-sky-500', 'bg-emerald-500',
   'bg-amber-500', 'bg-rose-500', 'bg-teal-500', 'bg-fuchsia-500'
 ];
 
@@ -74,19 +86,22 @@ const Navbar = () => {
   const { user, logout } = useAuthStore();
 
   return (
-    <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 flex items-center justify-between px-8 ml-64 fixed top-0 right-0 left-0 z-10">
+    <header className="h-16 border-b border-white/[0.06] flex items-center justify-between px-8 ml-64 fixed top-0 right-0 left-0 z-10"
+      style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
+    >
       <div />
       <div className="flex items-center gap-4">
         <div className="text-right mr-1">
-          <p className="text-sm font-semibold text-slate-700">{user?.name}</p>
-          <p className="text-xs text-slate-400">{user?.email}</p>
+          <p className="text-sm font-semibold text-slate-200">{user?.name}</p>
+          <p className="text-xs text-slate-500">{user?.email}</p>
         </div>
-        <div className={`avatar ${getAvatarColor(user?.name)}`}>
+        <div className={`avatar ${getAvatarColor(user?.name)} ring-2 ring-white/10`}>
           {getInitials(user?.name)}
         </div>
         <button
           onClick={logout}
-          className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all duration-200"
+          className="p-2 text-slate-500 hover:text-cherry-400 rounded-lg transition-all duration-300"
+          style={{ }}
           title="Logout"
         >
           <LogOut className="w-4 h-4" />
@@ -104,10 +119,17 @@ export const Layout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-dark-900">
+      {/* Subtle background mesh */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-0 left-1/3 w-[600px] h-[600px] rounded-full opacity-[0.025]"
+          style={{ background: 'radial-gradient(circle, #e11d48, transparent 70%)' }} />
+        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full opacity-[0.02]"
+          style={{ background: 'radial-gradient(circle, #3b82f6, transparent 70%)' }} />
+      </div>
       <Sidebar />
       <Navbar />
-      <main className="ml-64 pt-16 p-8">
+      <main className="ml-64 pt-16 p-8 relative z-[1]">
         <Outlet />
       </main>
     </div>
