@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/axios';
+import { useAuthStore } from '../store/useAuthStore';
 import { Plus, Users, FolderKanban, TrendingUp, Trash2 } from 'lucide-react';
 
 export const Projects = () => {
@@ -9,6 +10,7 @@ export const Projects = () => {
   const [showModal, setShowModal] = useState(false);
   const [newProject, setNewProject] = useState({ name: '', description: '' });
   const [creating, setCreating] = useState(false);
+  const token = useAuthStore(state => state.token);
 
   const fetchProjects = async () => {
     try {
@@ -21,7 +23,7 @@ export const Projects = () => {
     }
   };
 
-  useEffect(() => { fetchProjects(); }, []);
+  useEffect(() => { if (token) fetchProjects(); }, [token]);
 
   const handleCreateProject = async (e) => {
     e.preventDefault();

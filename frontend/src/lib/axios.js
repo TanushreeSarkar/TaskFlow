@@ -8,6 +8,7 @@ const api = axios.create({
   baseURL,
 });
 
+// Request interceptor — attach token from Zustand store to every request
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
@@ -17,6 +18,23 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor — auto-logout on 401 (expired/invalid token)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const { token, logout } = useAuthStore.getState();
+      // Only auto-logout if we had a token (i.e. not on the login page itself)
+      if (token) {
+        logout();
+        // Use hash-based navigation to match HashRouter
+        window.location.hash = '#/login';
+      }
+    }
     return Promise.reject(error);
   }
 );

@@ -44,6 +44,7 @@ export const TaskBoard = () => {
   const { id: projectId } = useParams();
   const navigate = useNavigate();
   const currentUser = useAuthStore(state => state.user);
+  const token = useAuthStore(state => state.token);
 
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -80,9 +81,10 @@ export const TaskBoard = () => {
   }, [projectId]);
 
   useEffect(() => {
+    if (!token) return;
     const load = async () => { setLoading(true); await Promise.all([fetchProject(), fetchTasks()]); setLoading(false); };
     load();
-  }, [fetchProject, fetchTasks]);
+  }, [fetchProject, fetchTasks, token]);
 
   useSocket(projectId, {
     onTaskCreated: (task) => setTasks(prev => prev.find(t => t._id === task._id) ? prev : [task, ...prev]),

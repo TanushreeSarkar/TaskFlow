@@ -27,14 +27,20 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await api.post('/auth/login', { email, password });
-      const { token, user } = res.data;
 
-      if (!user || !token) {
+      // Backend sends { token, user: { id, name, email } } directly
+      const data = res.data;
+      const user = data.user;
+      const tokenValue = data.token;
+
+      if (!user || !tokenValue) {
+        console.error('Login response shape:', data);
         throw new Error('Login response missing authentication data');
       }
 
-      login(user, token);
-      navigate('/dashboard', { replace: true });
+      // login() synchronously writes to localStorage AND updates Zustand state.
+      // Navigation will happen via the useEffect above once the token state updates.
+      login(user, tokenValue);
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Login failed');
     } finally {

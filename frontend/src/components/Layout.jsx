@@ -83,7 +83,14 @@ const getAvatarColor = (name) => {
 };
 
 const Navbar = () => {
-  const { user, logout } = useAuthStore();
+  const user = useAuthStore(state => state.user);
+  const logout = useAuthStore(state => state.logout);
+
+  const handleLogout = () => {
+    logout();
+    // HashRouter: redirect via hash
+    window.location.hash = '#/login';
+  };
 
   return (
     <header className="h-16 border-b border-white/[0.06] flex items-center justify-between px-8 ml-64 fixed top-0 right-0 left-0 z-10"
@@ -99,9 +106,8 @@ const Navbar = () => {
           {getInitials(user?.name)}
         </div>
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="p-2 text-slate-500 hover:text-cherry-400 rounded-lg transition-all duration-300"
-          style={{ }}
           title="Logout"
         >
           <LogOut className="w-4 h-4" />
@@ -112,7 +118,8 @@ const Navbar = () => {
 };
 
 export const Layout = () => {
-  const { token, user } = useAuthStore();
+  const token = useAuthStore(state => state.token);
+  const user = useAuthStore(state => state.user);
 
   if (!token || !user) {
     return <Navigate to="/login" replace />;

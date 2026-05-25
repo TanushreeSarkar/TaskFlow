@@ -11,20 +11,24 @@ export const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const user = useAuthStore(state => state.user);
+  const token = useAuthStore(state => state.token);
 
   useEffect(() => {
+    // Don't fetch until token is available in the store
+    if (!token) return;
+
     const fetchDashboard = async () => {
       try {
         const res = await api.get('/dashboard');
         setStats(res.data);
       } catch (err) {
-        console.error(err);
+        console.error('Dashboard fetch error:', err);
       } finally {
         setLoading(false);
       }
     };
     fetchDashboard();
-  }, []);
+  }, [token]);
 
   if (loading) {
     return (
