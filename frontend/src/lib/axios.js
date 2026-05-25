@@ -1,8 +1,11 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
-// Use deployed backend URL from VITE_API_URL first, then VITE_API_BASE_URL, then localhost.
-const baseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+// In production, the backend serves the frontend, so we use relative path.
+// In development, we use localhost or provided env var.
+const baseURL = import.meta.env.PROD 
+  ? '/api' 
+  : (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api');
 
 const api = axios.create({
   baseURL,
