@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    @apply bg-dark-900 text-slate-200 antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+  ::-webkit-scrollbar-thumb { background: rgba(225,29,72,0.25); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(225,29,72,0.4); }
+
+  /* Dark select dropdowns */
+  select option {
+    background: #141414;
+    color: #e2e8f0;
+  }
+}
+
+@layer components {
+  /* ─── Buttons ─── */
+  .btn-primary {
+    @apply px-5 py-2.5 text-white rounded-xl font-semibold text-sm
+    transition-all duration-300 hover:-translate-y-0.5 
+    active:translate-y-0 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+    background: linear-gradient(135deg, #e11d48, #3b82f6);
+    box-shadow: 0 4px 20px rgba(225,29,72,0.25);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 8px 30px rgba(225,29,72,0.35), 0 0 0 1px rgba(59,130,246,0.1);
+  }
+  .btn-secondary {
+    @apply px-5 py-2.5 text-slate-300 border border-white/10 rounded-xl font-semibold text-sm
+    transition-all duration-300 hover:text-white;
+    background: rgba(255,255,255,0.04);
+  }
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.18);
+  }
+  .btn-danger {
+    @apply px-5 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl font-semibold text-sm
+    transition-all duration-300 hover:shadow-lg hover:shadow-red-500/30 hover:-translate-y-0.5 
+    active:translate-y-0;
+  }
+  .btn-ghost {
+    @apply px-3 py-2 text-slate-400 rounded-lg font-medium text-sm
+    transition-all duration-300 hover:text-white;
+    &:hover { background: rgba(255,255,255,0.05); }
+  }
+
+  /* ─── Glass Cards ─── */
+  .glass-card {
+    @apply rounded-2xl border border-white/[0.06] transition-all duration-300;
+    background: rgba(255,255,255,0.025);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .glass-card-hover {
+    @apply glass-card hover:border-white/[0.12] hover:-translate-y-1;
+  }
+  .glass-card-hover:hover {
+    background: rgba(255,255,255,0.04);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 0 30px rgba(225,29,72,0.04);
+  }
+
+  .card { @apply glass-card; }
+  .card-hover { @apply glass-card-hover; }
+
+  /* ─── Input Fields ─── */
+  .input-field {
+    @apply w-full px-4 py-2.5 border border-white/10 rounded-xl text-sm text-slate-200
+    outline-none transition-all duration-300 placeholder:text-slate-600;
+    background: rgba(255,255,255,0.04);
+  }
+  .input-field:focus {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(225,29,72,0.4);
+    box-shadow: 0 0 0 3px rgba(225,29,72,0.1);
+  }
+
+  /* ─── Badges ─── */
+  .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold; }
+  .badge-admin {
+    @apply badge;
+    background: rgba(225,29,72,0.14); color: #fb7185; border: 1px solid rgba(225,29,72,0.2);
+  }
+  .badge-member {
+    @apply badge;
+    background: rgba(59,130,246,0.12); color: #93c5fd; border: 1px solid rgba(59,130,246,0.18);
+  }
+  .badge-todo {
+    @apply badge;
+    background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.15);
+  }
+  .badge-progress {
+    @apply badge;
+    background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.15);
+  }
+  .badge-done {
+    @apply badge;
+    background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.15);
+  }
+  .badge-overdue {
+    @apply badge;
+    background: rgba(225,29,72,0.12); color: #fb7185; border: 1px solid rgba(225,29,72,0.15);
+  }
+  .badge-low {
+    @apply badge;
+    background: rgba(148,163,184,0.12); color: #94a3b8; border: 1px solid rgba(148,163,184,0.15);
+  }
+  .badge-medium {
+    @apply badge;
+    background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.15);
+  }
+  .badge-high {
+    @apply badge;
+    background: rgba(225,29,72,0.12); color: #fb7185; border: 1px solid rgba(225,29,72,0.15);
+  }
+
+  /* ─── Modals ─── */
+  .modal-overlay {
+    @apply fixed inset-0 flex items-center justify-center z-50 p-4;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.2s ease-out;
+  }
+  .modal-content {
+    @apply w-full max-w-lg p-6 rounded-2xl border border-white/[0.08] relative;
+    background: linear-gradient(145deg, #141414, #0a0a0a);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 80px rgba(225,29,72,0.03);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ─── Stat Cards ─── */
+  .stat-card { @apply glass-card p-6 flex items-center gap-4; }
+  .stat-icon { @apply w-12 h-12 rounded-2xl flex items-center justify-center; }
+
+  /* ─── Progress ─── */
+  .progress-bar {
+    @apply h-2 rounded-full overflow-hidden;
+    background: rgba(255,255,255,0.06);
+  }
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-700 ease-out;
+    background: linear-gradient(90deg, #e11d48, #3b82f6);
+  }
+
+  /* ─── Avatar ─── */
+  .avatar { @apply w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white; }
+
+  /* ─── Gradient Text ─── */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #e11d48, #3b82f6);
+  }
+}
+
+/* ─── Keyframes ─── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.animate-slide-in { animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+
+/* ─── Tech Flower SVG Component ─── */
+.tech-flower {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.07;
+}
+.tech-flower path, .tech-flower circle, .tech-flower ellipse {
+  fill: none;
+  stroke-width: 1;
+}
