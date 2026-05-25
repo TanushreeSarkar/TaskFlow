@@ -27,11 +27,11 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await api.post('/auth/login', { email, password });
-      const payload = res.data?.data || res.data;
+      const payload = res.data?.data ?? res.data;
       console.log('Login response:', payload);
 
-      const user = payload?.user;
-      const tokenValue = payload?.token;
+      const user = payload?.user ?? payload?.data?.user;
+      const tokenValue = payload?.token ?? payload?.accessToken ?? payload?.data?.token;
 
       if (!user || !tokenValue) {
         throw new Error('Login response missing authentication data');
