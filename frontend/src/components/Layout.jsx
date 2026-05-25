@@ -112,9 +112,9 @@ const Navbar = () => {
 };
 
 export const Layout = () => {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
 
-  if (!token) {
+  if (!token || !user) {
     return <Navigate to="/login" replace />;
   }
 

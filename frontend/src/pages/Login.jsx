@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import api from '../lib/axios';
@@ -11,8 +11,15 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const token = useAuthStore(state => state.token);
   const login = useAuthStore(state => state.login);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,10 +27,20 @@ export const Login = () => {
     setLoading(true);
     try {
       const res = await api.post('/auth/login', { email, password });
-      login(res.data.user, res.data.token);
+      const payload = res.data?.data || res.data;
+      console.log('Login response:', payload);
+
+      const user = payload?.user;
+      const tokenValue = payload?.token;
+
+      if (!user || !tokenValue) {
+        throw new Error('Login response missing authentication data');
+      }
+
+      login(user, tokenValue);
       navigate('/dashboard', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      setError(err.response?.data?.message || err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
