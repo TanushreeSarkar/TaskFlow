@@ -2,9 +2,9 @@ import { useEffect, useRef, useCallback } from 'react';
 import { io } from 'socket.io-client';
 import { useAuthStore } from '../store/useAuthStore';
 
-const SOCKET_URL = import.meta.env.PROD 
-  ? '/' 
-  : (import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000');
+// Priority: explicit env var > same-origin fallback (monolith) > localhost (dev)
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL
+  || (import.meta.env.PROD ? window.location.origin : 'http://localhost:5000');
 
 export function useSocket(projectId, handlers = {}) {
   const socketRef = useRef(null);

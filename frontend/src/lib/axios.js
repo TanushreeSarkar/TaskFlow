@@ -1,9 +1,15 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
-// In production, the backend serves the frontend, so we use relative path.
-// In development, we use localhost or provided env var.
-const baseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:5000/api');
+// Priority: explicit env vars > same-origin fallback (monolith) > localhost (dev)
+const baseURL = import.meta.env.VITE_API_URL
+  || import.meta.env.VITE_API_BASE_URL
+  || (import.meta.env.PROD ? (window.location.origin + '/api') : 'http://localhost:5000/api');
+
+if (import.meta.env.PROD && !import.meta.env.VITE_API_URL && !import.meta.env.VITE_API_BASE_URL) {
+  console.warn('[TaskFlow] No VITE_API_URL configured — using same-origin fallback:', baseURL);
+  console.warn('[TaskFlow] If the backend is on a different domain, set VITE_API_URL in .env.production and rebuild.');
+}
 
 const api = axios.create({
   baseURL,
