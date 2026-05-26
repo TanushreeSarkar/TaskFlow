@@ -31,23 +31,44 @@ if (isProduction && allowedOrigins.length === 0) {
   console.warn('⚠️ No production CORS origins configured. Set CLIENT_URL, FRONTEND_URL, or PRODUCTION_URL.');
 }
 
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
+// Robust dynamic CORS setup
+app.use(cors((req, callback) => {
+  const origin = req.header('Origin');
+  const host = req.header('Host');
+  const referer = req.header('Referer');
+  
+  let corsOptions = {
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  };
 
-    const originsToAllow = isProduction ? allowedOrigins : [...localOrigins, ...allowedOrigins];
-    if (originsToAllow.some(o => origin.startsWith(o.replace(/\/+$/, '')))) {
-      return callback(null, true);
-    }
+  // If there's no Origin header (e.g., curl, mobile app, server-to-server request)
+  if (!origin) {
+    corsOptions.origin = true;
+    return callback(null, corsOptions);
+  }
 
-    if (!isProduction) {
-      return callback(null, true);
-    }
+  // 1. Check if the origin matches any allowed list
+  const originsToAllow = isProduction ? allowedOrigins : [...localOrigins, ...allowedOrigins];
+  const isAllowedOrigin = originsToAllow.some(o => origin.startsWith(o.replace(/\/+$/, '')));
 
-    callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true
+  // 2. Check if same-origin (frontend is served by same server as backend)
+  const cleanOrigin = origin.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+  const isSameHost = host && cleanOrigin === host.replace(/\/+$/, '');
+  const isSameReferer = referer && referer.replace(/^https?:\/\//i, '').startsWith(host.replace(/\/+$/, ''));
+
+  // 3. Fallback for non-production environments
+  const isLocalDev = !isProduction;
+
+  if (isAllowedOrigin || isSameHost || isSameReferer || isLocalDev) {
+    corsOptions.origin = origin;
+  } else {
+    // Gracefully block cross-origin requests by not returning Access-Control-Allow-Origin header
+    corsOptions.origin = false;
+  }
+
+  callback(null, corsOptions);
 }));
 app.use(express.json());
 
@@ -76,21 +97,36 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Validate essential environment variables at startup
+if (!process.env.MONGO_URI) {
+  console.error('❌ CRITICAL ERROR: MONGO_URI is not defined in the environment variables!');
+  console.error('👉 Fix: Please configure MONGO_URI on your hosting dashboard (e.g. Render config vars) or in .env');
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  console.error('❌ CRITICAL ERROR: JWT_SECRET is not defined in the environment variables!');
+  console.error('👉 Fix: Please configure JWT_SECRET on your hosting dashboard (e.g. Render config vars) or in .env');
+  process.exit(1);
+}
+
 // Database Connection
 const connectDB = async () => {
   const uri = process.env.MONGO_URI;
-
-  if (!uri) {
-    console.error('❌ MONGO_URI is not defined in .env');
-    process.exit(1);
-  }
+  
+  const options = {
+    dbName: 'taskflow',                     // Force database name
+    serverSelectionTimeoutMS: 5000,         // Timeout after 5s instead of hanging
+    autoIndex: process.env.NODE_ENV !== 'production', // Disable auto-indexing in production
+  };
 
   try {
-    await mongoose.connect(uri);
-    console.log(`✅ Connected to MongoDB Atlas (${process.env.NODE_ENV || 'development'})`);
+    await mongoose.connect(uri, options);
+    console.log(`✅ Connected to MongoDB Atlas DB: "${options.dbName}" (${process.env.NODE_ENV || 'development'})`);
   } catch (err) {
     console.error('❌ MongoDB Atlas connection failed:', err.message);
-    console.error('👉 Fix: Please ensure your current IP address is whitelisted in MongoDB Atlas Network Access (use 0.0.0.0/0 for anywhere).');
+    console.error('👉 Fix: Check your credentials and verify that the database server is online.');
+    console.error('👉 Fix: Please ensure your IP address is whitelisted in MongoDB Atlas Network Access (use 0.0.0.0/0 for anywhere).');
     process.exit(1);
   }
 };
