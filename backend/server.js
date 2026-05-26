@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
 const path = require('path');
+const fs = require('fs');
 const { setupSocket } = require('./socket');
 
 const authRoutes = require('./routes/auth');
@@ -89,12 +90,23 @@ app.use('/api', (req, res) => {
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  const frontendDistPath = path.join(__dirname, '../frontend/dist');
+  const indexHtmlPath = path.join(frontendDistPath, 'index.html');
 
-  // Use Regex /.*/ instead of string '*' for Express 5 compatibility
-  app.get(/.*/, (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../frontend/dist', 'index.html'));
-  });
+  if (fs.existsSync(indexHtmlPath)) {
+    app.use(express.static(frontendDistPath));
+
+    // Use Regex /.*/ instead of string '*' for Express 5 compatibility
+    app.get(/.*/, (req, res) => {
+      res.sendFile(indexHtmlPath);
+    });
+  } else {
+    // If the frontend is deployed separately (as a static site on Render),
+    // the backend won't have the dist directory. Serve a simple health check message.
+    app.get('/', (req, res) => {
+      res.json({ status: 'ok', message: 'TaskFlow API Server is running in production' });
+    });
+  }
 }
 
 // Validate essential environment variables at startup
