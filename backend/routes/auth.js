@@ -32,6 +32,7 @@ router.post('/signup', validate(signupSchema), async (req, res) => {
 
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
+    console.error('Signup error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -48,8 +49,13 @@ router.post('/login', validate(loginSchema), async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+    // Ensure `id` is a plain string for frontend consumers
+    res.status(200).json({
+      token,
+      user: { id: user._id.toString(), name: user.name, email: user.email }
+    });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

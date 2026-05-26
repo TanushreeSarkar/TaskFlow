@@ -19,23 +19,32 @@ const server = http.createServer(app);
 const io = setupSocket(server);
 app.set('io', io);
 
-// Middleware — CORS for both local dev and Render production
+const isProduction = process.env.NODE_ENV === 'production';
+const localOrigins = ['http://localhost:5173', 'http://localhost:3000'];
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000',
   process.env.CLIENT_URL,
-  'https://taskflow-p93m.onrender.com', // Production frontend URL
+  process.env.FRONTEND_URL,
+  process.env.PRODUCTION_URL,
 ].filter(Boolean);
+
+if (isProduction && allowedOrigins.length === 0) {
+  console.warn('⚠️ No production CORS origins configured. Set CLIENT_URL, FRONTEND_URL, or PRODUCTION_URL.');
+}
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.some(o => origin.startsWith(o.replace(/\/+$/, '')))) {
+
+    const originsToAllow = isProduction ? allowedOrigins : [...localOrigins, ...allowedOrigins];
+    if (originsToAllow.some(o => origin.startsWith(o.replace(/\/+$/, '')))) {
       return callback(null, true);
     }
-    // In development, allow all origins
-    if (process.env.NODE_ENV !== 'production') return callback(null, true);
+
+    if (!isProduction) {
+      return callback(null, true);
+    }
+
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true
@@ -51,6 +60,11 @@ app.use('/api/users', userRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' }));
+
+// Explicit JSON fallback for unmatched API routes
+app.use('/api', (req, res) => {
+  res.status(404).json({ message: 'API route not found' });
+});
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {

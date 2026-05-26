@@ -28,21 +28,28 @@ export const Login = () => {
     try {
       const res = await api.post('/auth/login', { email, password });
 
-      // Backend sends { token, user: { id, name, email } } directly
+      // Backend usually sends { token, user: { id, name, email } }
       const data = res.data;
-      const user = data.user;
-      const tokenValue = data.token;
+      const user = data?.user ?? data?.data?.user;
+      const tokenValue = data?.token ?? data?.data?.token;
 
       if (!user || !tokenValue) {
         console.error('Login response shape:', data);
-        throw new Error('Login response missing authentication data');
+        const serverMessage = typeof data === 'object'
+          ? data?.message || data?.errors?.[0]?.message
+          : `Unexpected login response from server: ${JSON.stringify(data)}`;
+        setError(serverMessage || 'Login response missing authentication data');
+        setLoading(false);
+        return;
       }
 
       // login() synchronously writes to localStorage AND updates Zustand state.
       // Navigation will happen via the useEffect above once the token state updates.
       login(user, tokenValue);
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Login failed');
+      const serverErr = err.response?.data;
+      const message = serverErr?.errors?.[0]?.message || serverErr?.message || err.message || 'Login failed';
+      setError(message);
     } finally {
       setLoading(false);
     }
